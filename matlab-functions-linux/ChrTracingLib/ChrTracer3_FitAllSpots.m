@@ -98,6 +98,15 @@ tic
 dataTable = cell(numSpots,1);
 % select a spot and extract the image data 
 f = pars.fov;
+
+if pars.numParallel > 1
+    poolobj = gcp('nocreate'); % Check if a pool already exists
+    if isempty(poolobj) % If no pool exists, create one
+        parpool('local', min(pars.numParallel, feature('numcores'))); 
+    end
+end
+
+
 if pars.numParallel < 2
     for s = selectSpots % 320;
         fidSpts = fidSpots{s};
